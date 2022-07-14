@@ -81,7 +81,12 @@ class MyStrategy:
             elif self.target_direction.x == 0 and self.target_direction.y == 1:
                 self.target_direction = Vec2(1, 0)
         return self.target_direction
-            
+    
+    def get_add_direction(self, target):
+        if self.my_unit.ammo[self.my_unit.weapon] > 5 and self.my_unit.shield >= self.game_constants.max_shield / 2:
+            return self.get_around_direction()
+        else:
+            return target
         
         
     def make_move(self, command: str):
@@ -97,8 +102,10 @@ class MyStrategy:
                 return self.make_order(
                             Vec2(self.game.zone.next_center.x-self.my_unit.position.x,
                                 self.game.zone.next_center.y-self.my_unit.position.y),
-                            Vec2(self.game.zone.next_center.x-self.my_unit.position.x, 
-                                self.game.zone.next_center.y-self.my_unit.position.y),
+                            # Vec2(self.game.zone.next_center.x-self.my_unit.position.x, 
+                            #     self.game.zone.next_center.y-self.my_unit.position.y),
+                            self.get_add_direction(Vec2(self.game.zone.next_center.x-self.my_unit.position.x, 
+                                                        self.game.zone.next_center.y-self.my_unit.position.y)),
                             action=self.add_action
                         )
                 
@@ -109,7 +116,8 @@ class MyStrategy:
                                 (self.closest_ammo.position.y-self.my_unit.position.y)*5),
                         # Vec2(self.closest_ammo.position.x-self.my_unit.position.x,
                         #         self.closest_ammo.position.y-self.my_unit.position.y),
-                        self.get_around_direction(),
+                        self.get_add_direction(Vec2(self.closest_ammo.position.x-self.my_unit.position.x,
+                                                    self.closest_ammo.position.y-self.my_unit.position.y)),
                         action=self.add_action
                     )
             else:
@@ -143,7 +151,8 @@ class MyStrategy:
                                 (self.closest_shield.position.y-self.my_unit.position.y)*5),
                         # Vec2(self.closest_shield.position.x-self.my_unit.position.x,
                         #         self.closest_shield.position.y-self.my_unit.position.y),
-                        self.get_around_direction(),
+                        self.get_add_direction(Vec2(self.closest_shield.position.x-self.my_unit.position.x,
+                                                    self.closest_shield.position.y-self.my_unit.position.y)),
                         action=self.add_action
                     )
             else:
